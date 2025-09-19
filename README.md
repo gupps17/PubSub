@@ -8,7 +8,7 @@ A simplified in-memory Pub/Sub system built with Python and FastAPI that provide
 - **REST API**: Topic management and system observability via HTTP endpoints
 - **Thread-Safe Operations**: Handles multiple publishers and subscribers safely
 - **In-Memory Storage**: No external dependencies (Redis, Kafka, etc.)
-- **Auto-Scaling Topics**: Topics are created automatically when first used
+- **Auto-Scaling Topics**: Topics are not created automatically when first used, but configurable
 - **Connection Management**: Automatic cleanup of stale connections
 - **Health Monitoring**: Built-in health checks and system statistics
 - **Containerized**: Docker support for easy deployment
