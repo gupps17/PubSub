@@ -37,10 +37,60 @@ A simplified in-memory Pub/Sub system built with Python and FastAPI that provide
 
 ### Using Docker (Recommended)
 
-1. Build and run the container:
+#### Option 1: Docker Compose (Easiest)
 ```bash
+# Start the service
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop the service
+docker-compose down
+```
+
+#### Option 2: Docker Build & Run
+```bash
+# Build the image
 docker build -t pubsub-system .
+
+# Run with default settings
 docker run -p 8000:8000 pubsub-system
+
+# Run with custom configuration
+docker run -p 8000:8000 \
+  -e WEBSOCKET_TIMEOUT=120 \
+  -e MAX_CONNECTIONS=2000 \
+  -e DEBUG=true \
+  pubsub-system
+
+# Run in background
+docker run -d -p 8000:8000 --name pubsub pubsub-system
+```
+
+#### Option 3: Docker Compose with Custom Environment
+```bash
+# Create custom environment file
+cp config.env .env
+
+# Edit .env with your settings
+vim .env
+
+# Run with custom configuration
+docker-compose --env-file .env up -d
+```
+
+#### Container Management
+```bash
+# Check container health
+docker ps
+docker exec pubsub curl http://localhost:8000/api/health
+
+# View container logs
+docker logs -f pubsub
+
+# Stop and remove
+docker stop pubsub && docker rm pubsub
 ```
 
 ### Local Development
@@ -258,6 +308,51 @@ The system can be configured using environment variables. Copy `.env.example` to
 | `SLOW_CONSUMER_THRESHOLD` | `0.8` | Queue fill ratio to consider slow consumer |
 | `MAX_DROPPED_MESSAGES` | `100` | Max dropped messages before disconnecting |
 | `CORS_ORIGINS` | `["*"]` | CORS allowed origins |
+
+### Docker Configuration
+
+#### Environment Variables in Docker
+```bash
+# Using docker run
+docker run -p 8000:8000 \
+  -e WEBSOCKET_TIMEOUT=120 \
+  -e MAX_CONNECTIONS=2000 \
+  -e DEBUG=true \
+  -e BACKPRESSURE_STRATEGY=disconnect \
+  pubsub-system
+
+# Using docker-compose.yml (modify the environment section)
+services:
+  pubsub:
+    environment:
+      - WEBSOCKET_TIMEOUT=120
+      - MAX_CONNECTIONS=2000
+      - DEBUG=true
+```
+
+#### Volume Mounting for Configuration
+```bash
+# Mount config.env file
+docker run -p 8000:8000 -v $(pwd)/config.env:/app/.env pubsub-system
+
+# Mount custom configuration directory
+docker run -p 8000:8000 -v $(pwd)/custom-config:/app/config pubsub-system
+```
+
+#### Container Resource Limits
+```yaml
+# In docker-compose.yml
+services:
+  pubsub:
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+```
 
 ## Design Decisions & Assumptions
 
