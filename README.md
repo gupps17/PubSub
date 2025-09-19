@@ -272,20 +272,20 @@ The server responds with one of these message types: `"ack" | "event" | "error" 
 
 #### Health & Monitoring
 
-- **GET** `/api/health` - Health check
-- **GET** `/api/stats` - System statistics
-- **GET** `/api/metrics` - Metrics in key-value format
-- **GET** `/api/slow-consumers` - Slow consumer statistics and details
-- **GET** `/api/isolation-check` - Verify topic isolation integrity
-- **POST** `/api/cleanup-slow-consumers` - Manually cleanup slow consumers
+- **GET** `/health` - Health check
+- **GET** `/stats` - System statistics
+- **GET** `/metrics` - Metrics in key-value format
+- **GET** `/slow-consumers` - Slow consumer statistics and details
+- **GET** `/isolation-check` - Verify topic isolation integrity
+- **POST** `/cleanup-slow-consumers` - Manually cleanup slow consumers
 
 #### Topic Management
 
-- **GET** `/api/topics/` - List all topics
-- **POST** `/api/topics/` - Create a new topic
-- **GET** `/api/topics/{name}` - Get topic information
-- **DELETE** `/api/topics/{name}` - Delete a topic
-- **GET** `/api/topics/{name}/stats` - Get topic statistics
+- **GET** `/topics/` - List all topics
+- **POST** `/topics/` - Create a new topic
+- **GET** `/topics/{name}` - Get topic information
+- **DELETE** `/topics/{name}` - Delete a topic
+- **GET** `/topics/{name}/stats` - Get topic statistics
 
 ## Configuration
 
@@ -339,20 +339,6 @@ docker run -p 8000:8000 -v $(pwd)/config.env:/app/.env pubsub-system
 docker run -p 8000:8000 -v $(pwd)/custom-config:/app/config pubsub-system
 ```
 
-#### Container Resource Limits
-```yaml
-# In docker-compose.yml
-services:
-  pubsub:
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-          cpus: '0.5'
-        reservations:
-          memory: 256M
-          cpus: '0.25'
-```
 
 ## Design Decisions & Assumptions
 
@@ -449,37 +435,6 @@ curl -X POST http://localhost:8000/api/topics/ \\
 curl http://localhost:8000/api/topics/
 ```
 
-### Using WebSocket client:
-
-```python
-import asyncio
-import websockets
-import json
-
-async def test_websocket():
-    uri = "ws://localhost:8000/ws"
-    
-    async with websockets.connect(uri) as websocket:
-        # Subscribe to topic
-        await websocket.send(json.dumps({
-            "type": "subscribe",
-            "topic": "test-topic"
-        }))
-        
-        # Publish message
-        await websocket.send(json.dumps({
-            "type": "publish",
-            "topic": "test-topic",
-            "data": {"message": "Hello, WebSocket!"}
-        }))
-        
-        # Receive messages
-        async for message in websocket:
-            print(json.loads(message))
-
-asyncio.run(test_websocket())
-```
-
 ## Production Considerations
 
 ### Security
@@ -535,13 +490,3 @@ asyncio.run(test_websocket())
 └── README.md
 ```
 
-### Code Quality
-- Type hints throughout the codebase
-- Pydantic models for data validation
-- Comprehensive error handling
-- Structured logging
-- Clean separation of concerns
-
-## License
-
-This project is provided as-is for educational and demonstration purposes.
