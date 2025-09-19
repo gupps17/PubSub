@@ -1,0 +1,13 @@
+# Web framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# Data validation and settings
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# System monitoring
+psutil==5.9.6
+
+# Development dependencies (optional)
+python-multipart==0.0.6
