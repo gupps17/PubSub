@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     debug: bool = False
     
     # WebSocket configuration
-    websocket_timeout: int = 60
+    websocket_timeout: int = 6000
     websocket_ping_interval: int = 30
     max_connections: int = 1000
     
@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     max_subscribers_per_topic: int = 100
     max_message_size: int = 1024 * 1024  # 1MB
     message_queue_size: int = 1000
-    auto_create_topics: bool = True  # Auto-create topics on first use
+    auto_create_topics: bool = False  # Auto-create topics on first use
     
     # Backpressure configuration
     backpressure_strategy: str = "drop_oldest"  # "drop_oldest", "drop_new", "disconnect"

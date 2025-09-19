@@ -10,7 +10,7 @@ from app.core.pubsub import pubsub_manager
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/", tags=["health"])
+router = APIRouter(tags=["health"])
 
 
 @router.get("/health", response_model=HealthStatus)
